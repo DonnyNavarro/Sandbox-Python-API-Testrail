@@ -16,16 +16,9 @@ class apiRequest(object):
         self.headers = {
             'Content-type': 'application/json'
             }
-        self.planId = "/52314"
+        self.planId = "/52314csd"
         self.params = params
-
-    # def requestPlan(self, testrunId=None):
-    #     """Get Test Plan details for the Testplan of the testrunId"""
-    #     if not testrunId:
-    #         testrunId = self.testrunId
-    #     params = "/get_plan/"
-    #     data = self.sendRequest(params+testrunId)
-    #     return data
+        self.response = False
 
     def sendRequest(self):
         """Session Example: Use session to send api requests with auth parameters"""
@@ -42,15 +35,21 @@ class apiRequest(object):
             displayJson(response)
             return False
         else:
+            self.response = response
             return response
 
 def displayJson(jsonData):
     """Print a JSON all pretty like"""
+    if jsonData == False:
+        return False
+    print(jsonData)
     jsonDict = jsonData.json()
     print(json.dumps(jsonDict, indent=4))
     # end basic session
 
-
+# Create request instance for get plan
 getPlan = apiRequest("/get_plan")
-planDetail = getPlan.sendRequest()
-displayJson(planDetail) if planDetail else False
+# Send a get plan request and store the response
+getPlan.sendRequest()
+# Display the response all pretty
+displayJson(getPlan.response)
