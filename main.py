@@ -131,7 +131,7 @@ def do_updatePlan(planId):
     # updatePlan.responseDisplay()
 
 def do_addPlanEntry(planId, suiteId, testcases=False):
-    """Add a Testrun to planId Testplan with all Testcases from the suiteId Test Suite. Testcases can be specified as an [id list] otherwise all cases in the testsuite will be included.
+    """Add a Testrun to planId Testplan. Testcases can be specified as an [id list] otherwise all cases in the testsuite will be included.
 
     Note that Tescase IDs do not include the first letter, just the numbers"""
     # include_all defaults to True, but can be toggled off to use a specific selection of testcases from the testsuite
@@ -145,11 +145,9 @@ def do_addPlanEntry(planId, suiteId, testcases=False):
     newEntry.sendRequest()
     newEntry.responseDisplay()
 
-# do_addPlanEntry("68270", "1474", ["C1127199", "C1127200"])
-do_addPlanEntry("68270", "1474", ["1127199", "1127200"])
+
 
 """Other features available in the API"""
-# add_plan_entry Add Testruns to a Testplan
 # update_plan_entry Edit a testrun within a testplan
 # close_plan
 
@@ -161,3 +159,4 @@ do_addPlanEntry("68270", "1474", ["1127199", "1127200"])
 # do_getUsers()
 # do_addPlan("New Test Plan", "76")
 # do_updatePlan("68270")
+# do_addPlanEntry("68270", "1474", ["1127199", "1127200"])
