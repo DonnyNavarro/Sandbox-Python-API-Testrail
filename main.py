@@ -75,7 +75,7 @@ def do_getPlan(planId="52314"):
     # getPlan.responseDisplay() # Display the response all pretty
     # getPlan.responseExport() # Save response to logs folder
     # print(getPlan.response.json()["name"]) # Call a single item from the response
-
+    return getPlan
 
 def do_getPlans(projectId="76"):
     """Example: Get Test Plans from Project"""
@@ -91,6 +91,7 @@ def do_getPlans(projectId="76"):
     # # Print all the Plan names in the Project
     # for plan in getPlans.response.json():
     #     print(plan["name"])
+    return getPlans
 
 def do_getUser(email="donny@ultratesting.us"):
     """Get user stats from Testrail"""
@@ -100,21 +101,31 @@ def do_getUser(email="donny@ultratesting.us"):
     myUser.name = myUser.response.json()["name"]
     myUser.email = myUser.response.json()["email"]
     print("User:",myUser.userId,myUser.name,myUser.email)
+    return myUser
 
 def do_getUsers():
     """Get stats for all the users on this Testrail (Why would we ever need this, creeper)"""
     allUsers = apiRequest("get", "/get_users")
     allUsers.sendRequest()
     # allUsers.responseDisplay()
+    return allUsers
 
 def do_addPlan(testName="Untitled Test Plan", projectId="76"):
     """Add a new Test Plan to a Project"""
+    # Additional capabilities available: Add to Milestone, Add with entries (Testruns)
     payload = {
         "name": testName
         }
     newPlan = apiRequest("post", "/add_plan/"+projectId, payload)
     newPlan.sendRequest()
     newPlan.responseDisplay()
+    return NewPlan
+
+
+"""Other features available in the API"""
+# add_plan_entry Add Testruns to a Testplan
+# update_plan Edit fields in a Testplan?
+
 
 # # Regress
 # do_getPlan()
