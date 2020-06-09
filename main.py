@@ -135,6 +135,7 @@ def do_addPlanEntry(planId, suiteId, testcases=False):
 
     Note that Tescase IDs do not include the first letter, just the numbers"""
     # include_all defaults to True, but can be toggled off to use a specific selection of testcases from the testsuite
+    payload = {}
     payload["suite_id"] = str(suiteId)
 
     if testcases:
@@ -145,8 +146,22 @@ def do_addPlanEntry(planId, suiteId, testcases=False):
     newEntry.sendRequest()
     newEntry.responseDisplay()
 
-def do_addResult(testId, result):
-    """Add a result (pass/fail/etc) to a testId's testcase instance"""
+def do_getStatus():
+    """Get all the statuses available for this Testrail. Reveals custom statuses, and their ID values"""
+    getStatuses = apiRequest("get", "/get_statuses/")
+    getStatuses.sendRequest()
+    # getStatuses.responseDisplay()
+
+def do_getRun(runId):
+    """Get the details of a particular runID Testrun"""
+    check = apiRequest("get", "/get_run/"+runId)
+    check.sendRequest()
+    # check.responseDisplay()
+
+def do_addResult(testId, result, report=""):
+    """Add a result (pass/fail/etc) to a testId's testcase instance. Report should be included as a string."""
+    # Note that it may be tricky finding good programmatic ways to identify testId's. These are not really intended to be entered by the user manually, that would never be efficient
+
     # Map human statuses to api values. 
     #   Note that Testrail does support custom statuses, 
     #   and a GET request to /get_statuses/ can fetch those custom values
@@ -159,17 +174,17 @@ def do_addResult(testId, result):
         "fail": 5
     }
     
+    # If report provided was a dict, our output will be ugly for now, but still works
+    if type(report) == dict:
+        report = json.dumps(report)
     payload = {}
     payload["status_id"] = statusMap[(result).lower()]
+    payload["comment"] = report
     newResult = apiRequest("post", "/add_result/"+testId, payload)
     newResult.sendRequest()
-    newResult.responseDisplay()
+    # newResult.responseDisplay()
+    return newResult
 
-do_addResult("84420526", "Fail")
-
-# check = apiRequest("get", "/get_run/"+"68280")
-# check.sendRequest()
-# check.responseDisplay()
 
 """Other features available in the API"""
 # update_plan_entry Edit a testrun within a testplan
@@ -184,3 +199,6 @@ do_addResult("84420526", "Fail")
 # do_addPlan("New Test Plan", "76")
 # do_updatePlan("68270")
 # do_addPlanEntry("68270", "1474", ["1127199", "1127200"])
+# do_getStatus()
+# do_getRun("68280")
+do_addResult("84420526", "Fail", "A big ole flop")
