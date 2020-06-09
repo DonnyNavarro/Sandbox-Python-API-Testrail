@@ -13,19 +13,16 @@ class apiRequest(object):
         self.url = os.getenv("TEST_RAIL_BASE_URL")
         self.username = os.getenv("TEST_RAIL_USERNAME")
         self.password = os.getenv("TEST_RAIL_API_KEY") # or password
-        self.headers = {
-            'Content-type': 'application/json'
-            }
-        self.planId = "/" + id
+        self.planId = "/" + str(id)
         self.params = "/" + params
-        self.response = False
+        self.headers = {'Content-type': 'application/json'}
         self.payload = False
+        self.response = False
 
     def sendRequest(self):
-        """Session Example: Use session to send api requests with auth parameters"""
-        session = requests.Session()
-        session.auth = (self.username, self.password)
-        auth = session.post(self.url+self.params)
+        """Send the API to Testrail defined in in this instance"""
+        session = requests.Session() # create a session request instance
+        session.auth = (self.username, self.password) # set auth for the session instance
 
         print("Sending request",self.url+self.params+"...")
         self.response = session.get(self.url + self.params + self.planId, headers=self.headers, data=self.payload)
@@ -35,7 +32,7 @@ class apiRequest(object):
         if self.response.status_code != 200:
             return False
         else:
-            self.responseDisplay()
+            self.responseDisplay() # Print the response
             return self.response
 
     def responseDisplay(self):
@@ -49,4 +46,4 @@ getPlan = apiRequest("get_plan", "52314")
 # Send a get plan request and store the response in getPlan.response
 getPlan.sendRequest()
 # Display the response all pretty
-getPlan.responseDisplay()
+# getPlan.responseDisplay()
