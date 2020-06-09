@@ -9,16 +9,17 @@ import requests
 import json
 
 class apiRequest(object):
-    def __init__(self, params):
+    def __init__(self, params, id):
         self.url = os.getenv("TEST_RAIL_BASE_URL")
         self.username = os.getenv("TEST_RAIL_USERNAME")
         self.password = os.getenv("TEST_RAIL_API_KEY") # or password
         self.headers = {
             'Content-type': 'application/json'
             }
-        self.planId = "/52314csd"
-        self.params = params
+        self.planId = "/" + id
+        self.params = "/" + params
         self.response = False
+        self.payload = False
 
     def sendRequest(self):
         """Session Example: Use session to send api requests with auth parameters"""
@@ -27,29 +28,25 @@ class apiRequest(object):
         auth = session.post(self.url+self.params)
 
         print("Sending request",self.url+self.params+"...")
-        response = session.get(self.url + self.params + self.planId, headers=self.headers)
-        print("Response Status Code:",response.status_code)
+        self.response = session.get(self.url + self.params + self.planId, headers=self.headers, data=self.payload)
+        print("Response Status Code:",self.response.status_code)
 
         # Validate request status
-        if response.status_code != 200:
-            displayJson(response)
+        if self.response.status_code != 200:
             return False
         else:
-            self.response = response
-            return response
+            self.responseDisplay()
+            return self.response
 
-def displayJson(jsonData):
-    """Print a JSON all pretty like"""
-    if jsonData == False:
-        return False
-    print(jsonData)
-    jsonDict = jsonData.json()
-    print(json.dumps(jsonDict, indent=4))
-    # end basic session
+    def responseDisplay(self):
+        """Display the response"""
+        if self.response == False:
+            return False
+        print(json.dumps(self.response.json(), indent=4))
 
 # Create request instance for get plan
-getPlan = apiRequest("/get_plan")
-# Send a get plan request and store the response
+getPlan = apiRequest("get_plan", "52314")
+# Send a get plan request and store the response in getPlan.response
 getPlan.sendRequest()
 # Display the response all pretty
-displayJson(getPlan.response)
+getPlan.responseDisplay()
