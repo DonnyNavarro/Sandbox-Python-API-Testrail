@@ -38,6 +38,7 @@ class apiRequest(object):
 
         # Validate request status
         if self.response.status_code != 200:
+            self.responseDisplay() # If an error occurs, display it to the user immediately
             return False
         else:
             # Return the response for truth, but its been stored in self.response so it can be called anywhere without catching this return
@@ -158,7 +159,7 @@ def do_getRun(runId):
     check.sendRequest()
     # check.responseDisplay()
 
-def do_addResult(testId, result, report=""):
+def do_addResult(testId, result, report="", defects=""):
     """Add a result (pass/fail/etc) to a testId's testcase instance. Report should be included as a string."""
     # Note that it may be tricky finding good programmatic ways to identify testId's. These are not really intended to be entered by the user manually, that would never be efficient
 
@@ -174,12 +175,19 @@ def do_addResult(testId, result, report=""):
         "fail": 5
     }
     
-    # If report provided was a dict, our output will be ugly for now, but still works
-    if type(report) == dict:
-        report = json.dumps(report)
+    # PAYLOAD
     payload = {}
     payload["status_id"] = statusMap[(result).lower()]
+    # COMMENT: If report provided was a dict, our output will be ugly for now, but still works
+    #   Type: Ultimately this needs to be a string. Markdown will need to be baked into the string before it is sent
+    if type(report) == dict:
+        report = json.dumps(report)
     payload["comment"] = report
+    # DEFECTS: It seems unlikely you have a defect ticket ready when sending automated status report, but if useful it is available
+    #   Type: Should be a comma separated string if sending multiple defect links
+    payload["defects"] = defects
+    # end PAYLOAD
+
     newResult = apiRequest("post", "/add_result/"+testId, payload)
     newResult.sendRequest()
     # newResult.responseDisplay()
