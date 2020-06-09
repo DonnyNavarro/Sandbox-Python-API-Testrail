@@ -145,7 +145,31 @@ def do_addPlanEntry(planId, suiteId, testcases=False):
     newEntry.sendRequest()
     newEntry.responseDisplay()
 
+def do_addResult(testId, result):
+    """Add a result (pass/fail/etc) to a testId's testcase instance"""
+    # Map human statuses to api values. 
+    #   Note that Testrail does support custom statuses, 
+    #   and a GET request to /get_statuses/ can fetch those custom values
+    statusMap = {
+        "pass": 1,
+        "passed": 1,
+        "blocked": 2,
+        "untested": 3,
+        "retest": 4,
+        "fail": 5
+    }
+    
+    payload = {}
+    payload["status_id"] = statusMap[(result).lower()]
+    newResult = apiRequest("post", "/add_result/"+testId, payload)
+    newResult.sendRequest()
+    newResult.responseDisplay()
 
+do_addResult("84420526", "Fail")
+
+# check = apiRequest("get", "/get_run/"+"68280")
+# check.sendRequest()
+# check.responseDisplay()
 
 """Other features available in the API"""
 # update_plan_entry Edit a testrun within a testplan
