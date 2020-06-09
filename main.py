@@ -66,7 +66,7 @@ class apiRequest(object):
         with open("logs/"+self.params+"-response"+time+".json", "w") as outfile:
             json.dump(self.response.json(), outfile, indent=4)
         
-def do_getPlan(planId="52314"):
+def do_getPlan(planId):
     """Example: Get Test Plan Details"""
     # Create request instance for get plan
     getPlan = apiRequest("get", "/get_plan/"+str(planId))
@@ -77,12 +77,11 @@ def do_getPlan(planId="52314"):
     # print(getPlan.response.json()["name"]) # Call a single item from the response
     return getPlan
 
-def do_getPlans(projectId="76"):
+def do_getPlans(projectId, milestone=""):
     """Example: Get Test Plans from Project"""
-    # Project 76 automation | Project 45 manual
     flag = "&created_by=" # return only test plans created by a particular user id
+    flag = "&milestone_id="+milestone # return only test plans associated with a particular milestone number
     flag = "&is_completed=0" # return only completed 1 or not completed 0 test plans
-    flag = "&milestone_id=1077" # return only test plans associated with a particular milestone number
     getPlans = apiRequest("get", "/get_plans/"+str(projectId)+flag) 
     getPlans.sendRequest()
     # getPlans.responseDisplay()
@@ -93,7 +92,7 @@ def do_getPlans(projectId="76"):
     #     print(plan["name"])
     return getPlans
 
-def do_getUser(email="donny@ultratesting.us"):
+def do_getUser(email):
     """Get user stats from Testrail"""
     myUser = apiRequest("get", "/get_user_by_email&email="+email)
     myUser.sendRequest()
@@ -110,7 +109,7 @@ def do_getUsers():
     # allUsers.responseDisplay()
     return allUsers
 
-def do_addPlan(testName="Untitled Test Plan", projectId="76"):
+def do_addPlan(testName, projectId):
     """Add a new Test Plan to a Project"""
     # Additional capabilities available: Add to Milestone, Add with entries (Testruns)
     payload = {
@@ -121,15 +120,25 @@ def do_addPlan(testName="Untitled Test Plan", projectId="76"):
     newPlan.responseDisplay()
     return NewPlan
 
+def do_updatePlan(planId):
+    """Edit a Testplan"""
+    # Can edit... name, milestone, assignment...
+    payload = {
+        "name": "Test Plan with an edited name",
+    }
+    updatePlan = apiRequest("post", "/update_plan/"+planId, payload)
+    updatePlan.sendRequest()
+    # updatePlan.responseDisplay()
+
 
 """Other features available in the API"""
 # add_plan_entry Add Testruns to a Testplan
 # update_plan Edit fields in a Testplan?
 
-
-# # Regress
-# do_getPlan()
-# do_getPlans()
-# do_getUser()
+"""Regress"""
+# do_getPlan("52314")
+# do_getPlans("76")
+# do_getUser("donny@ultratesting.us")
 # do_getUsers()
-# do_addPlan()
+# do_addPlan("New Test Plan", "76")
+# do_updatePlan("68270")
