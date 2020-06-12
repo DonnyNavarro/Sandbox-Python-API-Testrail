@@ -83,18 +83,17 @@ def nowTime():
     return datetime.today().strftime('%Y-%m-%d-%H%M%S')
 
 def promptYesno(message):
-    """Prompt the user with the message and only accept yes/no as input. Return the input."""
+    """Prompt the user with the message and only accept yes/no as input. Return true if they say yes."""
     choice = ""
     while not choice:
         choice = input(message+" [y/n] ")
         if choice.lower() in ["yes", "y", "yep", "yup", "sure"]:
-            choice = "yes"
+            return True
         elif choice.lower() in ["no", "n", "nope", "nah"]:
-            choice = "no"
+            return False
         else:
             print("ERROR: Input not recognized. Choose yes or no\n")
             choice = ""
-    return choice
 
 def promptNum(message):
     """Prompt the user with the message and only accept numbers as input. Return the input."""
@@ -129,7 +128,7 @@ if __name__ == '__main__':
     testsList = {}
 
     testrunReuse = promptYesno("Would you like to use a previous Testrun?")
-    if testrunReuse == "yes":
+    if testrunReuse:
         # Reuse a Testrun ID!
         testrunNum = promptNum("Testrun ID #")
         testrunResponse = apiRequest("get", "/get_run/"+testrunNum)
@@ -141,10 +140,10 @@ if __name__ == '__main__':
     else:
         # Creating a new Testrun! But first check if we want Milestones!
         milestone = promptYesno("Would you like to use a Milestone at all?")
-        if milestone == "yes":
+        if milestone:
             # Use a Milestone!
             milestoneReuse = promptYesno("Would you like to use a previous Milestone?")
-            if milestoneReuse == "yes":
+            if milestoneReuse:
                 # Reuse a Milestone ID!
                 milestoneNum = promptNum("Milestone ID #")
                 milestoneResponse = apiRequest("get", "/get_milestone/"+milestoneNum)
@@ -172,7 +171,7 @@ if __name__ == '__main__':
             "suite_id": suiteNum,
             "name": testrunName
         }
-        if milestone == "yes":
+        if milestone:
             testrunPayload["milestone_id"] = milestoneNum
         testrunResponse = apiRequest("post", "/add_run/"+str(projectNum), testrunPayload)
         testrunResponse.sendRequest()
