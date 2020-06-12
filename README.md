@@ -10,3 +10,8 @@ Exploring Testrail API features and what all we can automate with it
 ## Example: Blackboard Approach
 - **Description:** A working example of using a commandline interface to queue up Testrail destinations and deliver results to them within a python script
 - **File:** bb_example.py
+- **Approach:**
+  - Create/select Testrun
+  - Create/select Milestone (optional)
+  - Select Test Suite (all contained TCs are used)
+  - Store dictionary variable with mapping of TC name to ID needed ot send result POSTs
